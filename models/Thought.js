@@ -1,33 +1,5 @@
 const { Schema, model, Types } = require('mongoose');
 const moment = require('moment');
-const { ObjectId } = require('bson');
-
-const ThoughtSchema = new Schema(
-    {
-        thoughtText: {
-            type: String,
-            required: true,
-            maxLength: 280
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now,
-            get: createdAtVal => moment().format(createdAtVal)
-        },
-        username: {
-            type: String,
-            required: true
-        },
-        reactions: [ReactionSchema]
-    },
-    {
-        toJSON: {
-          virtuals: true,
-          getters: true
-        },
-        id: false
-    }
-)
 
 const ReactionSchema = new Schema(
     {
@@ -56,6 +28,33 @@ const ReactionSchema = new Schema(
         },
         id: false
       }
+)
+
+const ThoughtSchema = new Schema(
+    {
+        thoughtText: {
+            type: String,
+            required: true,
+            maxLength: 280
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now,
+            get: createdAtVal => moment().format(createdAtVal)
+        },
+        username: {
+            type: String,
+            required: true
+        },
+        reactions: [ReactionSchema]
+    },
+    {
+        toJSON: {
+          virtuals: true,
+          getters: true
+        },
+        id: false
+    }
 )
 
 ThoughtSchema.virtual('reactionCount').get(function() {
