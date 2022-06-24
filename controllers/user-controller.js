@@ -60,12 +60,42 @@ const userController = {
             res.json(dbUsersData)
         })
         .catch(err => res.status(400).json(err))
-    }
+    },
 
     // -> /api/users/:userId/friends/:friendId
     // post to add a new friend to a users friend list
-
+    addFriend( { params }, res) {
+        User.findOneAndUpdate(
+            { _id: params.userId },
+            { $push: { friends: params.friendId } },
+            { new: true , runValidators: true }
+        )
+        .then(dbUsersData => {
+            if(!dbUsersData) {
+                res.status(404).json({ message: 'No user found with this id!' })
+                return;
+            }
+            res.json(dbUsersData);
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(400).json(err)
+        })
+    },
+    
     // delete to remove a friend from users friend list
+    removeFriend( { params }, res) {
+        User.findOneAndUpdate(
+            { _id: params.userId },
+            { $pull: { friends: { _id: params.friendId } } },
+            { new: true }
+        )
+        .then(dbUsersData => res.json(dbUsersData))
+        .catch(err => {
+            console.log(err)
+            res.status(400).json(err)
+        })
+    }
     
 }
 
